@@ -39,17 +39,14 @@ def download_and_extract_pdf_text(pdf_url):
     response = requests.get(pdf_url)
     response.raise_for_status()
 
-    # Usa una directory temporanea per salvare il PDF
     temp_pdf_path = '/tmp/report.pdf'
     with open(temp_pdf_path, 'wb') as f:
         f.write(response.content)
 
-    # Estrarre il testo dal PDF
     with open(temp_pdf_path, 'rb') as pdf_file:
         reader = pypdf.PdfReader(pdf_file)
         full_text = ''.join([page.extract_text().replace('\n', ' ') for page in reader.pages])
 
-    # Rimuove il PDF temporaneo
     os.remove(temp_pdf_path)
     
     return full_text
@@ -58,7 +55,6 @@ def download_and_extract_pdf_text(pdf_url):
 def MyScraperFunction(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Processing ingredient request in MyScraperFunction.")
 
-    # Ottieni l'ingrediente dalla query string o dal body della richiesta
     ingrediente_richiesto = req.params.get('ingrediente')
     if not ingrediente_richiesto:
         try:
@@ -76,7 +72,6 @@ def MyScraperFunction(req: func.HttpRequest) -> func.HttpResponse:
 
     suffisso_url = "https://cir-reports.cir-safety.org/"
 
-    # Esegui la logica di scraping
     try:
         ingredienti_cir = fetch_ingredient_data(suffisso_url)
         ID_ingrediente = find(ingredienti_cir, ingrediente_richiesto)
@@ -85,7 +80,7 @@ def MyScraperFunction(req: func.HttpRequest) -> func.HttpResponse:
         if pdf_link:
             full_text = download_and_extract_pdf_text(pdf_link)
             return func.HttpResponse(
-                json.dumps({"testo": full_text[:500]}),  # Limita la risposta per semplicità
+                json.dumps({"testo": full_text[:500]}),
                 mimetype="application/json"
             )
         else:
