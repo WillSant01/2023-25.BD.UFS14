@@ -54,17 +54,13 @@ def test_fetch_ingredient_data():
     assert validate_wrapper(ingrediente, ingredient_schema), "Non soddisfa i requisiti per ingrediente CIR"
 
 
-# Test per la ricerca di un ingrediente specifico
 def test_find_ingredient():
 
-    # Carica il catalogo una volta sola per questo test
     with open("ingredienti.json", "r") as file:
         catalogo = json.load(file)
 
-    # Trova l'ID dell'ingrediente richiesto
     ingrediente_id = find(catalogo, "1,10-Decanediol")
 
-    # Verifica che l'ID dell'ingrediente sia presente nel catalogo
     assert any(item["pcpc_ingredientid"] == ingrediente_id for item in catalogo), \
         f"Ingrediente con ID {ingrediente_id} non presente in ingredienti.json"
 
@@ -80,8 +76,8 @@ def test_extract_link_pdf():
 
 
 def test_trova_valori(snapshot):
-    snapshot.snapshot_dir = "/workspaces/2023-25.BD.UFS14/project_work"
-    # Carica il catalogo una volta sola per questo test
+    snapshot.snapshot_dir = "./"
+
     with open("report.txt", "r") as file:
         text = file.read()
 
